@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class SpringForgeAutoConfigurationTest {
 
@@ -20,8 +21,8 @@ class SpringForgeAutoConfigurationTest {
     @Test
     void registersDefaultBeansInServletWebApplication() {
         webContextRunner.run(context -> {
-            assertThat(context).hasSingleBean(GlobalExceptionHandler.class);
-            assertThat(context).hasSingleBean(CorrelationIdFilter.class);
+            assertEquals(1, context.getBeansOfType(GlobalExceptionHandler.class).size());
+            assertEquals(1, context.getBeansOfType(CorrelationIdFilter.class).size());
         });
     }
 
@@ -30,8 +31,8 @@ class SpringForgeAutoConfigurationTest {
         webContextRunner
                 .withBean(GlobalExceptionHandler.class, GlobalExceptionHandler::new)
                 .run(context -> {
-                    assertThat(context).hasSingleBean(GlobalExceptionHandler.class);
-                    assertThat(context).hasSingleBean(CorrelationIdFilter.class);
+                    assertEquals(1, context.getBeansOfType(GlobalExceptionHandler.class).size());
+                    assertEquals(1, context.getBeansOfType(CorrelationIdFilter.class).size());
                 });
     }
 
@@ -42,8 +43,8 @@ class SpringForgeAutoConfigurationTest {
                         SpringForgeAutoConfiguration.class
                 ))
                 .run(context -> {
-                    assertThat(context).doesNotHaveBean(GlobalExceptionHandler.class);
-                    assertThat(context).doesNotHaveBean(CorrelationIdFilter.class);
+                    assertFalse(context.containsBean("springForgeGlobalExceptionHandler"));
+                    assertFalse(context.containsBean("springForgeCorrelationIdFilter"));
                 });
     }
 }
