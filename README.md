@@ -13,6 +13,18 @@ SpringForge Core is an open-source Java library containing small, reusable build
 - `ResourceNotFoundException`: application exception for missing resources.
 - `ResourceConflictException`: application exception for state conflicts such as duplicate resources.
 
+## Integration testing
+
+The project includes Spring Boot MVC integration tests using a real application context and MockMvc. They verify that auto-configuration is discovered from `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`, that the correlation ID filter runs, and that not-found, conflict, validation, and unexpected exceptions produce the expected HTTP responses.
+
+Run the full unit and integration test suite with:
+
+```bash
+mvn --batch-mode --no-transfer-progress clean verify
+```
+
+The integration-test dependencies are test-scoped and are not required by applications at runtime.
+
 ## Requirements
 
 - Java 17+
