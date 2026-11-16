@@ -30,6 +30,19 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void mapsResourceConflictTo409() {
+        var response = handler.handleConflict(
+                new ResourceConflictException("Email already exists")
+        );
+
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertFalse(response.getBody().success());
+        assertEquals("Email already exists", response.getBody().message());
+        assertNull(response.getBody().data());
+    }
+
+    @Test
     void mapsValidationErrorsTo400WithFieldMessages() throws Exception {
         Object target = new Object();
         BeanPropertyBindingResult bindingResult =
