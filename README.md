@@ -9,6 +9,8 @@ SpringForge Core is an open-source Java library containing small, reusable build
 - `ApiResponse<T>`: consistent success and error response envelope.
 - `PageResponse<T>`: framework-independent pagination response.
 - `CorrelationIdFilter`: validates or generates a request correlation ID, returns it in `X-Correlation-ID`, and places it in SLF4J MDC for request-scoped logging.
+- `GlobalExceptionHandler`: maps not-found, validation, and unexpected exceptions to consistent HTTP responses.
+- `ResourceNotFoundException`: application exception for missing resources.
 
 ## Requirements
 
@@ -58,6 +60,24 @@ Example JSON:
   "data": "Service is running"
 }
 ```
+
+## Example: global exception handling
+
+Register `GlobalExceptionHandler` through component scanning. Throw `ResourceNotFoundException` when a requested resource does not exist:
+
+```java
+@GetMapping("/users/{id}")
+public ApiResponse<User> getUser(@PathVariable Long id) {
+    User user = userService.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    return ApiResponse.success(user);
+}
+```
+
+The handler maps:
+- `ResourceNotFoundException` to HTTP 404.
+- `MethodArgumentNotValidException` to HTTP 400 with field-level messages.
+- Other unhandled exceptions to HTTP 500 with a generic client-facing message. The original exception is logged server-side and is not exposed in the response.
 
 ## Example: pagination response
 
