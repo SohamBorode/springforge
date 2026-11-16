@@ -27,6 +27,8 @@ mvn clean verify
 
 ## Add to a Spring Boot application
 
+SpringForge auto-configuration registers the global exception handler and correlation ID filter in servlet-based Spring Boot applications. You do not need to declare these beans manually.
+
 Until a published release is available, clone this repository and install it locally:
 
 ```bash
@@ -64,7 +66,7 @@ Example JSON:
 
 ## Example: global exception handling
 
-Register `GlobalExceptionHandler` through component scanning. Throw `ResourceNotFoundException` when a requested resource does not exist:
+The auto-configuration registers `GlobalExceptionHandler` automatically in a servlet-based Spring Boot application. Throw `ResourceNotFoundException` when a requested resource does not exist:
 
 ```java
 @GetMapping("/users/{id}")
@@ -96,19 +98,7 @@ PageResponse<String> response = new PageResponse<>(
 
 ## Example: correlation ID filter
 
-Register the filter as a Spring bean:
-
-```java
-@Configuration
-public class WebConfiguration {
-    @Bean
-    public CorrelationIdFilter correlationIdFilter() {
-        return new CorrelationIdFilter();
-    }
-}
-```
-
-Every request receives a validated `X-Correlation-ID` response header. A supplied ID is accepted only if it matches `[A-Za-z0-9._-]{1,128}`; otherwise a UUID is generated. The filter removes the MDC value after the request completes.
+The auto-configuration registers `CorrelationIdFilter` as a servlet filter bean. No manual registration is required. Every request receives a validated `X-Correlation-ID` response header. A supplied ID is accepted only if it matches `[A-Za-z0-9._-]{1,128}`; otherwise a UUID is generated. The filter removes the MDC value after the request completes.
 
 ## Contributing
 
