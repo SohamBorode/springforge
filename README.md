@@ -11,6 +11,7 @@ SpringForge Core is an open-source Java library containing small, reusable build
 - `CorrelationIdFilter`: validates or generates a request correlation ID, returns it in `X-Correlation-ID`, and places it in SLF4J MDC for request-scoped logging.
 - `GlobalExceptionHandler`: maps not-found, validation, and unexpected exceptions to consistent HTTP responses.
 - `ResourceNotFoundException`: application exception for missing resources.
+- `ResourceConflictException`: application exception for state conflicts such as duplicate resources.
 
 ## Requirements
 
@@ -76,6 +77,7 @@ public ApiResponse<User> getUser(@PathVariable Long id) {
 
 The handler maps:
 - `ResourceNotFoundException` to HTTP 404.
+- `ResourceConflictException` to HTTP 409.
 - `MethodArgumentNotValidException` to HTTP 400 with field-level messages.
 - Other unhandled exceptions to HTTP 500 with a generic client-facing message. The original exception is logged server-side and is not exposed in the response.
 
